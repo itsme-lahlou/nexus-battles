@@ -404,3 +404,14 @@ main { flex: 1; display: flex; gap: 12px; padding: 12px; min-height: 0; }
 /* scrollbar */
 #panel::-webkit-scrollbar { width: 6px; }
 #panel::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.25); border-radius: 3px; }
+
+/* main menu: two-button layout + slim secondary links */
+.btn.online { border-color: rgba(255, 94, 219, 0.55); }
+.btn.online:hover { border-color: rgba(255, 94, 219, 0.9); box-shadow: 0 0 18px rgba(255, 94, 219, 0.35), inset 0 0 12px rgba(255, 94, 219, 0.12); }
+.menu-sub { display: flex; gap: 12px; align-items: center; color: #8aa6d8; font-size: 12px; letter-spacing: 0.14em; }
+.linklike {
+  background: none; border: none; cursor: pointer;
+  font: inherit; font-size: 12px; letter-spacing: 0.14em; color: #7fdcff;
+  text-decoration: underline; text-underline-offset: 4px;
+}
+.linklike:hover { text-shadow: 0 0 10px rgba(127, 220, 255, 0.8); }

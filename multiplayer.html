@@ -24,23 +24,25 @@
       <input id="mp-name" maxlength="16" placeholder="COMMANDER" autocomplete="off">
     </div>
     <div class="menu-btns">
-      <button class="btn primary big" id="mp-btn-host">HOST A GAME</button>
-      <a class="btn big" href="index.html">BACK TO MENU</a>
+      <button class="btn primary big" id="mp-btn-create">CREATE</button>
+      <button class="btn big" id="mp-btn-join-open">JOIN</button>
     </div>
-    <div class="menu-bests">
-      RUN server.py · SHARE http://&lt;YOUR-IP&gt;:8137 ·
-      <a class="coop-link" href="coop.html">PREFER CO-OP? PLAY JOINT DEFENSE</a>
+    <div class="menu-sub">
+      <a class="linklike" href="index.html">SOLO MODE</a>
+      <span>·</span>
+      <a class="linklike" href="coop.html">CO-OP MODE</a>
     </div>
   </div>
 
-  <div id="mp-menu-rooms" class="menu-inner hidden">
-    <div class="title-eyebrow">// OPEN VERSUS ROOMS</div>
-    <h2 class="mp-subtitle">JOIN A COMMANDER OR FOUND YOUR OWN</h2>
-    <div id="mp-room-list"></div>
+  <div id="mp-menu-join" class="menu-inner hidden">
+    <div class="title-eyebrow">// JOIN A BATTLE</div>
+    <h2 class="mp-subtitle">ENTER YOUR FRIEND'S ROOM CODE</h2>
+    <input id="mp-join-code" class="code-input" maxlength="4" placeholder="0000" autocomplete="off" inputmode="numeric">
     <div class="menu-btns">
-      <button class="btn primary big" id="mp-btn-create">CREATE NEW ROOM</button>
-      <button class="btn big" id="mp-btn-rooms-back">BACK</button>
+      <button class="btn primary big" id="mp-btn-join">JOIN</button>
+      <button class="btn big" id="mp-btn-join-back">BACK</button>
     </div>
+    <div class="mp-hint">ASK THE HOST FOR THE 4-DIGIT CODE SHOWN ON THEIR SCREEN</div>
   </div>
 </div>
 
@@ -51,7 +53,7 @@
     <div class="wait-code" id="mp-wait-code">0000</div>
     <div class="wait-status" id="mp-wait-status">WAITING FOR AN OPPONENT…</div>
     <div id="mp-wait-players"></div>
-    <div class="wait-hint">YOUR RIVAL JOINS FROM THE LOBBY — OR FROM ANOTHER PC ON THIS NETWORK</div>
+    <div class="wait-hint">SHARE THE CODE — YOUR RIVAL CLICKS JOIN AND TYPES IT</div>
     <button class="btn" id="mp-btn-leave-wait">LEAVE ROOM</button>
   </div>
 </div>

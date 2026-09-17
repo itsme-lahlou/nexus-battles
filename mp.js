@@ -1748,6 +1748,7 @@ async function createRoom() {
     state.mySeat = res.seat;
     state.role = 'host';
     $('vs-room-tag').textContent = '#' + res.code;
+    $('mp-wait-code').textContent = res.code;
     showScreen('wait');
     updateWaitScreen(1);
     pollLoop();
@@ -1869,40 +1870,6 @@ function showGameOver(stats) {
   Sound.play(iWon ? 'win' : 'lose');
 }
 
-/* ========================= LOBBY ========================= */
-let lobbyTimer = null;
-
-async function refreshRooms() {
-  try {
-    const res = await api('rooms');
-    const list = $('mp-room-list');
-    list.innerHTML = '';
-    const rooms = res.rooms.filter(r => r.mode === 'versus');
-    if (!rooms.length) {
-      list.innerHTML = '<div class="room-empty">NO OPEN ROOMS — CREATE ONE!</div>';
-    }
-    for (const r of rooms) {
-      const row = document.createElement('div');
-      row.className = 'room-row';
-      const full = r.players >= 2;
-      row.innerHTML =
-        `<div class="room-info"><span class="room-name"></span><span class="room-code">#${r.code}</span></div>` +
-        `<span class="room-count ${full ? 'full' : ''}">${r.players}/2</span>`;
-      row.querySelector('.room-name').textContent = r.name;
-      const btn = document.createElement('button');
-      btn.className = 'btn small';
-      btn.textContent = full ? 'FULL' : 'ENTER';
-      btn.disabled = full;
-      btn.addEventListener('click', () => joinRoom(r.code));
-      row.appendChild(btn);
-      list.appendChild(row);
-    }
-  } catch (e) {
-    $('mp-room-list').innerHTML =
-      '<div class="room-empty">SERVER OFFLINE — RUN: python3 server.py</div>';
-  }
-}
-
 /* ========================= INPUT & PANELS ========================= */
 function buildShop() {
   const shop = $('vs-shop');
@@ -1943,23 +1910,26 @@ function buildShop() {
 }
 
 function wireEvents() {
-  $('mp-btn-host').addEventListener('click', () => {
-    Sound.ensure(); Sound.play('click');
-    $('mp-menu-home').classList.add('hidden');
-    $('mp-menu-rooms').classList.remove('hidden');
-    refreshRooms();
-    clearInterval(lobbyTimer);
-    lobbyTimer = setInterval(refreshRooms, 2000);
-  });
   $('mp-btn-create').addEventListener('click', () => {
-    clearInterval(lobbyTimer);
+    Sound.ensure(); Sound.play('click');
     createRoom();
   });
-  $('mp-btn-rooms-back').addEventListener('click', () => {
-    Sound.play('click');
-    $('mp-menu-rooms').classList.add('hidden');
-    $('mp-menu-home').classList.remove('hidden');
-    clearInterval(lobbyTimer);
+  $('mp-btn-join-open').addEventListener('click', () => {
+    Sound.ensure(); Sound.play('click');
+    $('mp-menu-home').classList.add('hidden');
+    $('mp-menu-join').classList.remove('hidden');
+    $('mp-join-code').focus();
+  });
+  $('mp-join-code').addEventListener('input', e => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 4);
+  });
+  $('mp-join-code').addEventListener('keydown', e => {
+    if (e.key === 'Enter') $('mp-btn-join').click();
+  });
+  $('mp-btn-join').addEventListener('click', () => {
+    const code = $('mp-join-code').value.trim();
+    if (code.length !== 4) { toastMsg('ENTER THE 4-DIGIT CODE'); return; }
+    joinRoom(code);
   });
   $('mp-btn-leave-wait').addEventListener('click', () => leaveRoom());
   $('vs-btn-leave').addEventListener('click', () => leaveRoom());
