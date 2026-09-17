@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CYBER DEFENSE: NEXUS — 1V1 BATTLES</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="mp.css">
+</head>
+<body>
+
+<!-- ================= LOBBY ================= -->
+<div id="mp-menu">
+  <div class="orb cyan"></div>
+  <div class="orb purple"></div>
+
+  <div id="mp-menu-home" class="menu-inner">
+    <div class="title-eyebrow">// VERSUS BATTLE PROTOCOL</div>
+    <h1 class="title">NEXUS <span>BATTLES</span></h1>
+    <p class="subtitle">DEFEND YOUR NEXUS · SEND ATTACKS · LAST ONE STANDING WINS</p>
+    <div class="mp-name-row">
+      <label for="mp-name">CALLSIGN</label>
+      <input id="mp-name" maxlength="16" placeholder="COMMANDER" autocomplete="off">
+    </div>
+    <div class="menu-btns">
+      <button class="btn primary big" id="mp-btn-host">HOST A GAME</button>
+      <a class="btn big" href="index.html">BACK TO MENU</a>
+    </div>
+    <div class="menu-bests">
+      RUN server.py · SHARE http://&lt;YOUR-IP&gt;:8137 ·
+      <a class="coop-link" href="coop.html">PREFER CO-OP? PLAY JOINT DEFENSE</a>
+    </div>
+  </div>
+
+  <div id="mp-menu-rooms" class="menu-inner hidden">
+    <div class="title-eyebrow">// OPEN VERSUS ROOMS</div>
+    <h2 class="mp-subtitle">JOIN A COMMANDER OR FOUND YOUR OWN</h2>
+    <div id="mp-room-list"></div>
+    <div class="menu-btns">
+      <button class="btn primary big" id="mp-btn-create">CREATE NEW ROOM</button>
+      <button class="btn big" id="mp-btn-rooms-back">BACK</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= WAITING ROOM ================= -->
+<div id="mp-wait" class="hidden">
+  <div class="wait-box glass">
+    <div class="title-eyebrow">// ROOM OPEN</div>
+    <div class="wait-code" id="mp-wait-code">0000</div>
+    <div class="wait-status" id="mp-wait-status">WAITING FOR AN OPPONENT…</div>
+    <div id="mp-wait-players"></div>
+    <div class="wait-hint">YOUR RIVAL JOINS FROM THE LOBBY — OR FROM ANOTHER PC ON THIS NETWORK</div>
+    <button class="btn" id="mp-btn-leave-wait">LEAVE ROOM</button>
+  </div>
+</div>
+
+<!-- ================= VERSUS GAME ================= -->
+<div id="vs-game" class="hidden">
+  <header id="vs-topbar">
+    <h1>NEXUS <span>BATTLES</span></h1>
+    <div class="chips">
+      <div class="chip wave" title="Round"><span class="chip-ico">🌊</span><span class="value" id="vs-round">1</span></div>
+      <div class="chip coins" id="vs-chip-coins" title="Your coins"><span class="chip-ico">🪙</span><span class="value" id="vs-coins">250</span></div>
+      <div class="chip income" id="vs-chip-income" title="Income — extra coins every round"><span class="chip-ico">📈</span><span class="value" id="vs-income">+0</span></div>
+      <div class="chip lag hidden" id="vs-chip-lag" title="Connection stutter — the battle keeps running in real time">📡 LAG</div>
+    </div>
+    <div class="mp-room-tag" id="vs-room-tag">#0000</div>
+    <div class="controls">
+      <button class="btn icon" id="vs-btn-pause" title="Pause (host)">⏸</button>
+      <button class="btn icon" id="vs-btn-speed" title="Game speed (host)">1x</button>
+      <button class="btn icon" id="vs-btn-sound" title="Sound on/off">🔊</button>
+      <button class="btn icon warn" id="vs-btn-leave" title="Leave = forfeit">FORFEIT</button>
+    </div>
+  </header>
+
+  <main class="vs-main">
+    <div class="vs-boards">
+      <div class="vs-board me">
+        <div class="vs-head">
+          <span class="vs-name" id="vs-head-me-name">YOU</span>
+          <div class="vs-hpbar"><div class="vs-hpfill" id="vs-head-me-fill"></div></div>
+          <span class="vs-hpnum" id="vs-head-me-hp">150</span>
+        </div>
+        <div class="vs-cv-frame">
+          <canvas id="vs-cv-me" width="780" height="520"></canvas>
+          <div id="vs-vignette-me"></div>
+          <div class="vs-tag you">YOUR NEXUS</div>
+        </div>
+      </div>
+      <div class="vs-board opp">
+        <div class="vs-head">
+          <span class="vs-name" id="vs-head-opp-name">RIVAL</span>
+          <div class="vs-hpbar"><div class="vs-hpfill enemy" id="vs-head-opp-fill"></div></div>
+          <span class="vs-hpnum" id="vs-head-opp-hp">150</span>
+        </div>
+        <div class="vs-cv-frame opp-frame">
+          <canvas id="vs-cv-opp" width="780" height="520"></canvas>
+          <div id="vs-vignette-opp"></div>
+          <div class="vs-tag foe">RIVAL'S NEXUS</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vs-dock">
+      <section class="dock-sec mine">
+        <div class="panel-title">🛡 YOUR DEFENSES — PICK ONE, PLACE IT ANYWHERE OFF THE ROAD</div>
+        <div id="vs-shop" class="tile-row"></div>
+        <div id="vs-inspector" class="hidden">
+          <button class="up-btn" id="vs-up-damage"><span class="up-name">DMG</span><span class="up-cost">100 🪙</span></button>
+          <button class="up-btn" id="vs-up-range"><span class="up-name">RNG</span><span class="up-cost">100 🪙</span></button>
+          <button class="up-btn" id="vs-up-speed"><span class="up-name">SPD</span><span class="up-cost">100 🪙</span></button>
+          <button id="vs-btn-sell" class="sell-btn">SELL</button>
+        </div>
+      </section>
+      <section class="dock-sec rival">
+        <div class="panel-title">⚔ SEND TO <span id="vs-foe-name">RIVAL</span> — EARN INCOME</div>
+        <div id="vs-attack" class="tile-row"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- overlays -->
+  <div id="vs-announce"><div class="ann-title"></div><div class="ann-sub"></div></div>
+  <div id="vs-toast"></div>
+</div>
+
+<!-- ================= MATCH OVER ================= -->
+<div class="modal" id="vs-gameover">
+  <div class="modal-box danger">
+    <div class="go-title" id="vs-go-title">VICTORY</div>
+    <div class="go-sub" id="vs-go-sub">ENEMY NEXUS DESTROYED</div>
+    <div class="go-duo" id="vs-go-names">P1 &amp; P2</div>
+    <div class="go-stats">
+      <div class="stat"><span>ROUND REACHED</span><b id="vs-go-wave">1</b></div>
+      <div class="stat"><span>YOUR KILLS</span><b id="vs-go-kills">0</b></div>
+      <div class="stat"><span>YOUR INCOME</span><b id="vs-go-income">0</b></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn primary" id="vs-btn-lobby">BACK TO LOBBY</button>
+    </div>
+  </div>
+</div>
+
+<script src="mp.js"></script>
+</body>
+</html>

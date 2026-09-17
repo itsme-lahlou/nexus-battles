@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CYBER DEFENSE: NEXUS</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ================= START SCREEN ================= -->
+<div id="menu">
+  <div class="orb cyan"></div>
+  <div class="orb purple"></div>
+  <div class="menu-inner">
+    <div class="title-eyebrow">// TOWER DEFENSE PROTOCOL v2.7</div>
+    <h1 class="title">CYBER DEFENSE<br><span>NEXUS</span></h1>
+    <p class="subtitle">DEFEND THE LAST ENERGY CORE</p>
+    <div class="menu-btns">
+      <button class="btn primary big" id="btn-start">START DEFENSE</button>
+      <a class="btn big" href="multiplayer.html">1v1 BATTLES</a>
+      <button class="btn big" id="btn-how">HOW TO PLAY</button>
+    </div>
+    <div class="menu-bests"><a class="coop-link" href="coop.html">PREFER CO-OP? PLAY JOINT DEFENSE WITH A FRIEND</a></div>
+    <div class="menu-bests" id="menu-bests">BEST WAVE — &nbsp;·&nbsp; HIGH SCORE —</div>
+  </div>
+</div>
+
+<!-- ================= GAME SCREEN ================= -->
+<div id="game" class="hidden">
+  <header id="topbar">
+    <h1>CYBER DEFENSE: <span>NEXUS</span></h1>
+    <div class="chips">
+      <div class="chip hp" id="chip-hp"><span class="label">NEXUS HP</span><span class="value" id="hp-val">100</span></div>
+      <div class="chip coins" id="chip-coins"><span class="label">COINS</span><span class="value" id="coins-val">300</span></div>
+      <div class="chip wave"><span class="label">WAVE</span><span class="value" id="wave-val">1</span></div>
+      <div class="chip enemies"><span class="label">ENEMIES</span><span class="value" id="enemies-val">0</span></div>
+    </div>
+    <div class="controls">
+      <button class="btn icon" id="btn-pause" title="Pause (Space)">⏸</button>
+      <button class="btn icon" id="btn-speed" title="Game speed">1x</button>
+      <button class="btn icon" id="btn-sound" title="Sound on/off">🔊</button>
+      <button class="btn icon warn" id="btn-menu" title="Back to main menu">MENU</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="arena">
+      <div id="cv-frame">
+        <canvas id="cv" width="960" height="600"></canvas>
+        <div id="vignette"></div>
+        <div id="bossbar">
+          <div class="boss-name" id="boss-name">OMEGA TITAN</div>
+          <div class="boss-track"><div id="boss-fill"></div></div>
+        </div>
+        <div id="announce"><div class="ann-title"></div><div class="ann-sub"></div></div>
+        <div id="toast"></div>
+        <div id="boss-warning">
+          <div class="bw-title">⚠ BOSS WAVE ⚠</div>
+          <div class="bw-name" id="boss-warn-name">OMEGA TITAN</div>
+          <div class="bw-sub">MASSIVE HOSTILE SIGNATURE DETECTED</div>
+        </div>
+      </div>
+    </div>
+
+    <aside id="panel">
+      <div class="panel-title">DEFENSE GRID</div>
+      <div id="shop"></div>
+
+      <div class="panel-title">TOWER CONSOLE</div>
+      <div id="inspector" class="glass">
+        <div id="insp-empty">SELECT A TOWER<br>ON THE GRID</div>
+        <div id="insp-body" class="hidden">
+          <div class="insp-head"><span id="insp-name">PULSE CANNON</span><span id="insp-lv" class="lv">LV 1</span></div>
+          <div class="insp-stats" id="insp-stats"></div>
+          <div class="insp-btns">
+            <button class="up-btn" id="up-damage"><span class="up-name">UPGRADE DAMAGE</span><span class="up-cost">100 🪙</span></button>
+            <button class="up-btn" id="up-range"><span class="up-name">UPGRADE RANGE</span><span class="up-cost">100 🪙</span></button>
+            <button class="up-btn" id="up-speed"><span class="up-name">UPGRADE SPEED</span><span class="up-cost">100 🪙</span></button>
+          </div>
+          <button id="btn-sell" class="sell-btn">SELL TOWER</button>
+        </div>
+      </div>
+
+      <button id="btn-wave"><span id="wave-label">START WAVE 1</span><span id="wave-sub">EARLY BONUS +25 🪙</span></button>
+    </aside>
+  </main>
+</div>
+
+<!-- ================= HOW TO PLAY ================= -->
+<div class="modal" id="howto">
+  <div class="modal-box">
+    <div class="modal-title">HOW TO PLAY</div>
+    <ol class="howto-list">
+      <li>Build towers on the <b>glowing pads</b> beside the path.</li>
+      <li>Towers <b>attack automatically</b> — no aiming needed.</li>
+      <li>Destroy enemies to earn <b>coins</b> 🪙</li>
+      <li>Spend coins to <b>upgrade</b> damage, range and speed.</li>
+      <li>Protect the <b>NEXUS</b> — every enemy that gets through costs HP.</li>
+      <li>Survive as many waves as you can. A <b>boss</b> arrives every 5th wave.</li>
+    </ol>
+    <div class="howto-keys">SPACE pause &nbsp;·&nbsp; ESC deselect &nbsp;·&nbsp; click a pad, then pick a tower</div>
+    <div class="modal-btns"><button class="btn primary" id="btn-how-close">CLOSE</button></div>
+  </div>
+</div>
+
+<!-- ================= GAME OVER ================= -->
+<div class="modal" id="gameover">
+  <div class="modal-box danger">
+    <div class="go-title">SYSTEM FAILURE</div>
+    <div class="go-sub">THE NEXUS HAS FALLEN</div>
+    <div class="go-stats">
+      <div class="stat"><span>WAVE REACHED</span><b id="go-wave">1</b></div>
+      <div class="stat"><span>ENEMIES DESTROYED</span><b id="go-kills">0</b></div>
+      <div class="stat"><span>COINS EARNED</span><b id="go-coins">0</b></div>
+      <div class="stat total"><span>TOTAL SCORE</span><b id="go-score">0</b></div>
+    </div>
+    <div class="go-best" id="go-best"></div>
+    <div class="modal-btns">
+      <button class="btn primary" id="btn-restart">RESTART</button>
+      <button class="btn" id="btn-go-menu">MAIN MENU</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

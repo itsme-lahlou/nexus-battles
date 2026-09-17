@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CYBER DEFENSE: NEXUS — CO-OP MODE</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="mp.css">
+</head>
+<body>
+
+<!-- ================= LOBBY ================= -->
+<div id="mp-menu">
+  <div class="orb cyan"></div>
+  <div class="orb purple"></div>
+
+  <div id="mp-menu-home" class="menu-inner">
+    <div class="title-eyebrow">// CO-OP DEFENSE PROTOCOL</div>
+    <h1 class="title">JOINT <span>DEFENSE</span></h1>
+    <p class="subtitle">ONE MAP · ONE NEXUS · ONE COIN POOL · TWO COMMANDERS</p>
+    <div class="mp-name-row">
+      <label for="mp-name">CALLSIGN</label>
+      <input id="mp-name" maxlength="16" placeholder="COMMANDER" autocomplete="off">
+    </div>
+    <div class="menu-btns">
+      <button class="btn primary big" id="mp-btn-host">HOST A GAME</button>
+      <a class="btn big" href="index.html">SINGLE PLAYER</a>
+    </div>
+    <div class="menu-bests">RUN server.py · SHARE http://&lt;YOUR-IP&gt;:8137 · BOTH DEFEND THE SAME NEXUS</div>
+  </div>
+
+  <div id="mp-menu-rooms" class="menu-inner hidden">
+    <div class="title-eyebrow">// OPEN ROOMS</div>
+    <h2 class="mp-subtitle">JOIN A COMMANDER OR FOUND YOUR OWN</h2>
+    <div id="mp-room-list"></div>
+    <div class="menu-btns">
+      <button class="btn primary big" id="mp-btn-create">CREATE NEW ROOM</button>
+      <button class="btn big" id="mp-btn-rooms-back">BACK</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= WAITING ROOM ================= -->
+<div id="mp-wait" class="hidden">
+  <div class="wait-box glass">
+    <div class="title-eyebrow">// ROOM OPEN</div>
+    <div class="wait-code" id="mp-wait-code">0000</div>
+    <div class="wait-status" id="mp-wait-status">WAITING FOR A SECOND PLAYER…</div>
+    <div id="mp-wait-players"></div>
+    <div class="wait-hint">FRIEND JOINS FROM THE LOBBY — OR FROM ANOTHER PC ON THIS NETWORK</div>
+    <button class="btn" id="mp-btn-leave-wait">LEAVE ROOM</button>
+  </div>
+</div>
+
+<!-- ================= GAME ================= -->
+<div id="mp-game" class="hidden">
+  <header id="mp-topbar">
+    <h1>JOINT <span>DEFENSE</span></h1>
+    <div class="chips">
+      <div class="chip hp" id="mp-chip-hp" title="Nexus HP"><span class="chip-ico">❤️</span><span class="value" id="mp-hp">120</span></div>
+      <div class="chip coins" id="mp-chip-coins" title="Shared coins"><span class="chip-ico">🪙</span><span class="value" id="mp-coins">400</span></div>
+      <div class="chip wave" title="Wave"><span class="chip-ico">🌊</span><span class="value" id="mp-wave">1</span></div>
+      <div class="chip enemies" title="Enemies"><span class="chip-ico">👾</span><span class="value" id="mp-enemies">0</span></div>
+    </div>
+    <div class="mp-room-tag" id="mp-room-tag">#0000</div>
+    <div class="controls">
+      <button class="btn icon" id="mp-btn-pause" title="Pause (host)">⏸</button>
+      <button class="btn icon" id="mp-btn-speed" title="Game speed (host)">1x</button>
+      <button class="btn icon" id="mp-btn-sound" title="Sound on/off">🔊</button>
+      <button class="btn icon warn" id="mp-btn-leave" title="Leave room">LEAVE</button>
+    </div>
+  </header>
+
+  <main class="mp-main">
+    <div class="mp-left">
+      <div id="mp-arena">
+        <div id="mp-cv-frame">
+          <canvas id="mp-cv" width="960" height="600"></canvas>
+          <div id="mp-vignette"></div>
+          <div id="mp-bossbar">
+            <div class="boss-name" id="mp-boss-name">OMEGA TITAN</div>
+            <div class="boss-track"><div id="mp-boss-fill"></div></div>
+          </div>
+          <div id="mp-announce"><div class="ann-title"></div><div class="ann-sub"></div></div>
+          <div id="mp-toast"></div>
+          <div id="mp-boss-warning">
+            <div class="bw-title">⚠ BOSS WAVE ⚠</div>
+            <div class="bw-name" id="mp-warn-name">OMEGA TITAN</div>
+            <div class="bw-sub">MASSIVE HOSTILE SIGNATURE DETECTED</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mp-consoles">
+        <div class="mp-console p1" id="mp-cons-p1">
+          <div class="cons-head"><span class="dot"></span><span class="cons-name">PLAYER 1</span><span class="cons-you">YOU</span></div>
+          <div class="cons-body">BUILDING DEFENSES…</div>
+        </div>
+        <div class="mp-console p2" id="mp-cons-p2">
+          <div class="cons-head"><span class="dot"></span><span class="cons-name">PLAYER 2</span><span class="cons-you">YOU</span></div>
+          <div class="cons-body">BUILDING DEFENSES…</div>
+        </div>
+      </div>
+    </div>
+
+    <aside id="mp-panel">
+      <div class="panel-title">SHARED ARMORY</div>
+      <div id="mp-shop"></div>
+
+      <div class="panel-title">TOWER CONSOLE</div>
+      <div id="mp-inspector" class="glass">
+        <div id="mp-insp-empty">SELECT A PAD OR A TOWER<br>ON THE GRID</div>
+        <div id="mp-insp-body" class="hidden">
+          <div class="insp-head">
+            <span id="mp-insp-name">TOWER</span>
+            <span id="mp-insp-owner" class="owner">YOURS</span>
+            <span id="mp-insp-lv" class="lv">LV 1</span>
+          </div>
+          <div class="insp-stats" id="mp-insp-stats"></div>
+          <div class="insp-btns">
+            <button class="up-btn" id="mp-up-damage"><span class="up-name">UPGRADE DAMAGE</span><span class="up-cost">100 🪙</span></button>
+            <button class="up-btn" id="mp-up-range"><span class="up-name">UPGRADE RANGE</span><span class="up-cost">100 🪙</span></button>
+            <button class="up-btn" id="mp-up-speed"><span class="up-name">UPGRADE SPEED</span><span class="up-cost">100 🪙</span></button>
+          </div>
+          <button id="mp-btn-sell" class="sell-btn">SELL TOWER</button>
+        </div>
+      </div>
+
+      <button id="mp-btn-wave"><span id="mp-wave-label">STANDBY</span><span id="mp-wave-sub"></span></button>
+    </aside>
+  </main>
+</div>
+
+<!-- ================= GAME OVER ================= -->
+<div class="modal" id="mp-gameover">
+  <div class="modal-box danger">
+    <div class="go-title">SYSTEM FAILURE</div>
+    <div class="go-sub">THE NEXUS HAS FALLEN</div>
+    <div class="go-duo" id="mp-go-names">P1 &amp; P2</div>
+    <div class="go-stats">
+      <div class="stat"><span>WAVE REACHED</span><b id="mp-go-wave">1</b></div>
+      <div class="stat"><span>ENEMIES DESTROYED</span><b id="mp-go-kills">0</b></div>
+      <div class="stat"><span>COINS REMAINING</span><b id="mp-go-coins">0</b></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn primary" id="mp-btn-lobby">BACK TO LOBBY</button>
+    </div>
+  </div>
+</div>
+
+<script src="coop.js"></script>
+</body>
+</html>
