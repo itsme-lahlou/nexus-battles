@@ -7,6 +7,7 @@ Python stdlib only — no dependencies.
 Run:   python3 server.py        →  http://localhost:8137
 LAN:   other players open http://<your-ip>:8137
 """
+import bisect
 import json
 import os
 import random
@@ -45,6 +46,7 @@ class Room:
         self.created = time.time()
         self.tokens = {}      # token -> {seat, name, last}
         self.events = []      # oldest first: {seq, seat, type, data, t}
+        self.seq_keys = []    # parallel to events — for bisect lookup
         self.seq = 0
         self.cv = threading.Condition()
         self.add_player(player_name)
@@ -74,12 +76,15 @@ class Room:
                 "seq": self.seq, "seat": seat,
                 "type": type_, "data": data, "t": time.time(),
             })
+            self.seq_keys.append(self.seq)
             if len(self.events) > 4000:
-                self.events = self.events[-2000:]
+                del self.events[:2000]
+                del self.seq_keys[:2000]
             self.cv.notify_all()
 
     def events_after(self, seq):
-        return [e for e in self.events if e["seq"] > seq]
+        i = bisect.bisect_right(self.seq_keys, seq)
+        return self.events[i:]
 
     def wait_events(self, seq, timeout):
         deadline = time.time() + timeout
@@ -88,7 +93,7 @@ class Room:
                 evs = self.events_after(seq)
                 if evs or time.time() >= deadline:
                     return evs
-                self.cv.wait(0.1)
+                self.cv.wait(0.05)
 
     def public(self):
         return {"code": self.code, "name": self.name,
